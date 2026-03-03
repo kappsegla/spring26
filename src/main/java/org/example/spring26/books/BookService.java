@@ -10,4 +10,10 @@ public class BookService {
     public BookService() {
         log.info("BookService constructor");
     }
+
+    public Book getBook(String id) {
+        if( id == null || id.isEmpty() || Integer.parseInt(id) < 0 )
+            throw new BookNotFoundException("Bok med id " + id + " hittades inte");
+        return new Book("Book Title", Integer.parseInt(id));
+    }
 }

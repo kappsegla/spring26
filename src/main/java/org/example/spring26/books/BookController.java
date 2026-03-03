@@ -3,6 +3,7 @@ package org.example.spring26.books;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -17,8 +18,8 @@ public class BookController {
         this.bookService = bookService;
     }
 
-    @GetMapping("/books")
-    void getBook() {
-
+    @GetMapping("/books/{id}")
+    public Book getBook(@PathVariable String id) {
+        return bookService.getBook(id);
     }
 }
