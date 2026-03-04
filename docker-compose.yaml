@@ -1,0 +1,9 @@
+services:
+  postgresql:
+    image: postgres:latest
+    environment:
+      - 'POSTGRES_DB=spring26'
+      - 'POSTGRES_USER=user'
+      - 'POSTGRES_PASSWORD=pw'
+    ports:
+      - '5432'

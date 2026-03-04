@@ -21,6 +21,6 @@ public class BookController {
 
     @GetMapping("/books")
     List<Book> getBooks() {
-        return List.of();
+        return bookService.getAllBooks();
     }
 }
