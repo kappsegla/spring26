@@ -40,4 +40,24 @@ public class HelloController {
 
     record Hello(String name, LocalDateTime time) {
     }
+
+//    @GetMapping("/home")
+//    public String home() {
+//        return """
+//                <!DOCTYPE html>
+//                <html lang="en">
+//                <head>
+//                    <meta charset="UTF-8">
+//                    <title>Title</title>
+//                </head>
+//                <body>
+//                <p>Hello Home</p>
+//                """
+//                + LocalDateTime.now() +
+//                """
+//                        </body>
+//                        </html>
+//                        """;
+//    }
+
 }
