@@ -13,14 +13,20 @@ public class BookController {
     private static final Logger log = LoggerFactory.getLogger(BookController.class);
 
     @GetMapping("/books/form")
-    public String showForm() {
+    public String showForm(Model model) {
+        var userForm = new UserForm("", "");
+        model.addAttribute("userForm", userForm);
         return "form";
     }
 
     @PostMapping("/books/form")
     public String processForm(UserForm userForm, Model model) {
         //Validering
-
+        if (userForm.name() == null || userForm.name().isEmpty()) {
+            model.addAttribute("userForm", userForm);
+            model.addAttribute("nameError", "Please enter a name");
+            return "form";
+        }
         model.addAttribute("name", userForm.name());
         model.addAttribute("email", userForm.email());
         return "result";
