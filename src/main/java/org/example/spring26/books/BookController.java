@@ -6,7 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class BookController {
@@ -19,13 +18,11 @@ public class BookController {
     }
 
     @PostMapping("/books/form")
-    public String processForm(
-            @RequestParam String name,
-            @RequestParam String email, Model model) {
+    public String processForm(UserForm userForm, Model model) {
         //Validering
-        //Save to db?
-        model.addAttribute("name", name);
-        model.addAttribute("email", email);
+
+        model.addAttribute("name", userForm.name());
+        model.addAttribute("email", userForm.email());
         return "result";
     }
 }
