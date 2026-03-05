@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class BookController {
@@ -20,15 +21,22 @@ public class BookController {
     }
 
     @PostMapping("/books/form")
-    public String processForm(UserForm userForm, Model model) {
+    public String processForm(UserForm userForm, Model model, RedirectAttributes redirectAttributes) {
         //Validering
         if (userForm.name() == null || userForm.name().isEmpty()) {
             model.addAttribute("userForm", userForm);
             model.addAttribute("nameError", "Please enter a name");
             return "form";
         }
-        model.addAttribute("name", userForm.name());
-        model.addAttribute("email", userForm.email());
-        return "result";
+        //Flash attributes are saved in our session
+        redirectAttributes.addFlashAttribute("name", userForm.name());
+        return "redirect:/books/thankyou";
+    }
+
+    @GetMapping("/books/thankyou")
+    public String showThankYou() {
+        //Session flash attributes are copied automatically into a Model
+        //Flash attributes are now removed after rendering the new page
+        return "thankyou";
     }
 }
