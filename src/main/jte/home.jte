@@ -21,6 +21,12 @@
         <li>${task}</li>
     @endfor
 </ul>
+<hr>
+<h2>XSS Demos</h2>
+<ul>
+    <li><a href="/xss/vulnerable?name=Guest">Vulnerable XSS Page</a></li>
+    <li><a href="/xss/protected?name=Guest">Protected XSS Page</a></li>
+</ul>
 @template.footer(company = "fungover", year = 2026)
 </body>
 </html>
