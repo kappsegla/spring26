@@ -2,25 +2,43 @@ package org.example.spring26.books;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/books")
 public class BookController {
 
     private static final Logger log = LoggerFactory.getLogger(BookController.class);
 
-    BookService bookService;
+    private final BookService bookService;
 
     public BookController(BookService bookService) {
         log.info("BookController constructor");
         this.bookService = bookService;
     }
 
-    @GetMapping("/books")
-    List<Book> getBooks() {
+    @GetMapping
+    public List<Book> getBooks() {
         return bookService.getAllBooks();
+    }
+
+    @PostMapping
+    public Book createBook(@RequestParam String title) {
+        return bookService.saveBook(title);
+    }
+
+    /**
+     * Demonstrate transaction rollback.
+     * URL: /books/bulk-update?ids=1,2&newTitle=Updated&fail=true
+     */
+    @PutMapping("/bulk-update")
+    public String bulkUpdate(
+            @RequestParam List<Long> ids,
+            @RequestParam String newTitle,
+            @RequestParam(defaultValue = "false") boolean fail) {
+        bookService.updateTitlesInTransaction(ids, newTitle, fail);
+        return "Bulk update successful!";
     }
 }
