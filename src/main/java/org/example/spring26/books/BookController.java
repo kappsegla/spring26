@@ -21,6 +21,7 @@ public class BookController {
 
     @GetMapping
     public List<Book> getBooks() {
+        log.info("Real service class is: {} ", this.bookService.getClass().getName());
         return bookService.getAllBooks();
     }
 

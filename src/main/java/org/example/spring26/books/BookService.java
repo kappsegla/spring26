@@ -3,7 +3,9 @@ package org.example.spring26.books;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
 
@@ -11,10 +13,10 @@ import java.util.List;
 public class BookService {
     private static final Logger log = LoggerFactory.getLogger(BookService.class);
     private final BookRepository bookRepository;
+    private final TransactionTemplate transactionTemplate;
 
-    public BookService(BookRepository bookRepository)
-    {
-        log.info("BookService constructor");
+    public BookService(BookRepository bookRepository, PlatformTransactionManager transactionManager) {
+        this.transactionTemplate = new TransactionTemplate(transactionManager);
         this.bookRepository = bookRepository;
     }
 
@@ -23,9 +25,12 @@ public class BookService {
     }
 
     public Book saveBook(String title) {
-        Book book = new Book();
-        book.setTitle(title);
-        return bookRepository.save(book);
+        return transactionTemplate.execute((status) -> {
+            log.info("Save book with title {}", title);
+            Book book = new Book();
+            book.setTitle(title);
+            return bookRepository.save(book);
+        });
     }
 
     @Transactional
