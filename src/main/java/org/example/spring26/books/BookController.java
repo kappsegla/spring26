@@ -16,6 +16,7 @@ public class BookController {
 
     public BookController(BookService bookService) {
         log.info("BookController constructor");
+        log.info("BookService type {}", bookService.getClass().getName());
         this.bookService = bookService;
     }
 

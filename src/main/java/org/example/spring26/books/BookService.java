@@ -10,6 +10,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class BookService {
     private static final Logger log = LoggerFactory.getLogger(BookService.class);
     private final BookRepository bookRepository;
@@ -20,17 +21,18 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
+
     public List<Book> getAllBooks() {
         return bookRepository.findAll();
     }
 
+    @Transactional
     public Book saveBook(String title) {
-        return transactionTemplate.execute((status) -> {
-            log.info("Save book with title {}", title);
-            Book book = new Book();
-            book.setTitle(title);
-            return bookRepository.save(book);
-        });
+        log.info("Save book with title {}", title);
+        getAllBooks();
+        Book book = new Book();
+        book.setTitle(title);
+        return bookRepository.save(book);
     }
 
     @Transactional
