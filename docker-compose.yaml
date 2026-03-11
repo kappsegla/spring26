@@ -1,6 +1,6 @@
 services:
   postgresql:
-    image: postgres:latest
+    image: postgres:17
     environment:
       - 'POSTGRES_DB=spring26'
       - 'POSTGRES_USER=user'
