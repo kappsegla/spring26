@@ -29,7 +29,6 @@ public class BookService {
     @Transactional
     public Book saveBook(String title) {
         log.info("Save book with title {}", title);
-        getAllBooks();
         Book book = new Book();
         book.setTitle(title);
         return bookRepository.save(book);
