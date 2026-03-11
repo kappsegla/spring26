@@ -2,6 +2,9 @@ package org.example.spring26.books;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,6 +32,22 @@ public class BookController {
     @PostMapping
     public Book createBook(@RequestParam String title) {
         return bookService.saveBook(title);
+    }
+
+    @GetMapping("/update/{id}")
+    public void updateBookTitle(@PathVariable long id, @RequestParam String title) {
+        bookService.updateTitle(id, title);
+    }
+
+    @GetMapping("/page")
+    public Page<Book> booksPaged(Pageable pageable) {
+        return bookService.findBooks(pageable);
+    }
+
+    @GetMapping("/books")
+    public Page<Book> booksPagedWithDefaults(
+            @PageableDefault(size = 2, sort = "title") Pageable pageable) {
+        return bookService.findBooks(pageable);
     }
 
     /**

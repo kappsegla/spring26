@@ -2,22 +2,19 @@ package org.example.spring26.books;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
 public class BookService {
     private static final Logger log = LoggerFactory.getLogger(BookService.class);
     private final BookRepository bookRepository;
-    private final TransactionTemplate transactionTemplate;
 
-    public BookService(BookRepository bookRepository, PlatformTransactionManager transactionManager) {
-        this.transactionTemplate = new TransactionTemplate(transactionManager);
+    public BookService(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }
 
@@ -48,5 +45,15 @@ public class BookService {
             log.error("Intentional failure triggered for transaction rollback demo!");
             throw new BulkUpdateException("Rollback requested!");
         }
+    }
+
+    @Transactional
+    public void updateTitle(long id, String title) {
+        bookRepository.updateTitle(id, title);
+    }
+
+    @Transactional
+    public Page<Book> findBooks(Pageable pageable) {
+        return bookRepository.findAllBy(pageable);
     }
 }
