@@ -12,7 +12,7 @@ public interface AuthorRepository extends ListCrudRepository<Author, Long> {
 
     Author findByFirstName(String firstName);
 
-    Optional<Author> findAuthorByFirstName(String firstName);
+    Optional<Author> findAuthorsByFirstName(String firstName);
 
     List<Author> findByAddressCity(String addressCity);
 

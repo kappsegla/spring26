@@ -11,12 +11,15 @@ import java.util.List;
 
 public interface BookRepository extends ListCrudRepository<Book, Long> {
 
+    @Query("SELECT b from Book b where b.title like %:title%")
+    List<Book> books(@Param("title") String title);
+
     @Modifying
     @Query("UPDATE Book b SET b.title = :newTitle WHERE b.id IN :ids")
     int updateTitles(@Param("ids") List<Long> ids,
                      @Param("newTitle") String newTitle);
 
-    @Modifying
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE Book b SET b.title = :newTitle WHERE b.id = :id")
     int updateTitle(@Param("id") Long id,
                     @Param("newTitle") String newTitle);

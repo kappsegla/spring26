@@ -6,6 +6,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 
 @SpringBootApplication
 public class Spring26Application {
@@ -15,6 +16,7 @@ public class Spring26Application {
     }
 
     @Bean
+    @Profile("!test")
     ApplicationRunner applicationRunner(BookRepository bookRepository) {
         return args -> {
             if (bookRepository.count() == 0) {
