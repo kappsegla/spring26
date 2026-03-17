@@ -15,6 +15,10 @@ import java.time.LocalDateTime;
 @RestController
 public class HelloController {
 
+
+    public HelloController(ClockBean clockBean) {
+    }
+
     @GetMapping("/")
     public Hello sayHello() {
         return new Hello("Kalle", LocalDateTime.now());
