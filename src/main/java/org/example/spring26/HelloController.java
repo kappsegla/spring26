@@ -19,11 +19,6 @@ public class HelloController {
     public HelloController(ClockBean clockBean) {
     }
 
-    @GetMapping("/")
-    public Hello sayHello() {
-        return new Hello("Kalle", LocalDateTime.now());
-    }
-
     @PostMapping("/hellos")
     public void add(@RequestBody Hello hello) {
 

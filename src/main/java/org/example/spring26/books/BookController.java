@@ -19,6 +19,5 @@ public class BookController {
 
     @GetMapping("/books")
     void getBook() {
-
     }
 }
