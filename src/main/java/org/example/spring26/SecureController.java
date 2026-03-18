@@ -1,5 +1,7 @@
 package org.example.spring26;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,8 +19,15 @@ public class SecureController {
     }
 
     @GetMapping("/user")
-    public String usersOnly() {
-        return "Only users with role USER can access this endpoint.";
+    public String usersOnly(Authentication authentication) {
+        var securityContext = SecurityContextHolder.getContext();
+        var auth = securityContext.getAuthentication();
+
+        return "Only users with role USER can access this endpoint. "
+                + "You are: " + authentication.getName()
+                + " Is authenticated: " + auth.isAuthenticated()
+                + " Grants: " + auth.getAuthorities()
+                + " Credentials: " + auth.getCredentials();
     }
 
 }
