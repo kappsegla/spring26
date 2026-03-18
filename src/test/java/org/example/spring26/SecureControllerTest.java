@@ -1,6 +1,7 @@
 package org.example.spring26;
 
 import org.example.spring26.config.SecurityConfig;
+import org.example.spring26.filters.ApiKeyAuthenticationProvider;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -12,7 +13,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(SecureController.class)
-@Import(SecurityConfig.class)
+@Import({SecurityConfig.class, ApiKeyAuthenticationProvider.class})
 class SecureControllerTest {
 
     @Autowired
@@ -30,6 +31,13 @@ class SecureControllerTest {
     void userCanNotAccessAdminEndpoint() throws Exception {
         mockMvc.perform(get("/admin"))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void userCanAccessAdminEndpoint() throws Exception {
+        mockMvc.perform(get("/admin"))
+                .andExpect(status().isOk());
     }
 
     @Test
