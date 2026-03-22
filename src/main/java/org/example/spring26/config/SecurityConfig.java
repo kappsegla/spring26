@@ -17,24 +17,22 @@ import org.springframework.security.web.webauthn.management.UserCredentialReposi
 public class SecurityConfig {
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) {
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/webauthn/**", "/signup", "/login/webauthn")
-                )
-//                .csrf(csrf -> csrf
-//                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()) // Tillåter JS att läsa cookien
-//                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
-//                )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/error", "/login/webauthn", "/login", "/").permitAll()
-                        .requestMatchers("/signup").permitAll()
-                        .requestMatchers("/device-link/create").authenticated()
+                        // Public endpoints
+                        .requestMatchers("/", "/login", "/login/webauthn", "/signup", "/error").permitAll()
+                        .requestMatchers("/webauthn/authenticate/**").permitAll()
                         .requestMatchers("/device-link").permitAll()
+
+                        // Authenticated endpoints
                         .requestMatchers("/profile", "/logout").authenticated()
+                        .requestMatchers("/device-link/create").authenticated()
+
+                        // Elevated permission endpoints (Temporary or Full access)
                         .requestMatchers("/add-passkey").hasAnyRole("USER", "TEMP")
                         .requestMatchers("/webauthn/register/**").hasAnyRole("USER", "TEMP")
-                        .requestMatchers("/webauthn/authenticate/**").permitAll()
+
                         .anyRequest().authenticated()
                 )
                 .webAuthn(webAuthn -> webAuthn
