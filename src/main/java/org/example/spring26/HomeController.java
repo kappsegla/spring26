@@ -1,44 +1,40 @@
 package org.example.spring26;
 
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.csrf.CsrfToken;
+import org.springframework.security.web.webauthn.management.PublicKeyCredentialUserEntityRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.servlet.ModelAndView;
-
-import java.util.Locale;
 
 @Controller
 public class HomeController {
 
-    MessageSource messageSource;
+    private final PublicKeyCredentialUserEntityRepository users;
 
-    public HomeController(MessageSource messageSource) {
-        this.messageSource = messageSource;
+    public HomeController(PublicKeyCredentialUserEntityRepository users) {
+        this.users = users;
     }
 
-//    @GetMapping("/home")
-//    public String home(Model model) {
-//        model.addAttribute("title", "Home");
-//        model.addAttribute("message", "Hello from Spring MVC");
-//        model.addAttribute("clock", new ClockBean());
-//        return "home";
-//    }
+    @GetMapping("/")
+    public String index(CsrfToken token, Model model, Authentication authentication) {
+        model.addAttribute("csrfToken", token.getToken());
+        boolean isAuthenticated = authentication != null && authentication.isAuthenticated();
+        model.addAttribute("isAuthenticated", isAuthenticated);
 
-    @GetMapping("/jtehome")
-    public String jtehome(Model model, Locale locale) {
-        model.addAttribute("title", "JTE Demo");
-        model.addAttribute("message", "Hello using JTE");
-        model.addAttribute("localizer", new JteLocalizer(messageSource, locale));
-        return "home";
+        if (isAuthenticated) {
+            var user = users.findByUsername(authentication.getName());
+            if (user != null) {
+                model.addAttribute("displayName", user.getDisplayName());
+            }
+        }
+
+        return "index";
     }
 
-    @GetMapping("/mvhome")
-    public ModelAndView mvhome() {
-        var mv = new ModelAndView("home");
-        mv.addObject("title", "MV Demo");
-        mv.addObject("message", "Hello using MV");
-        return mv;
+    @GetMapping("/add-passkey")
+    public String addPasskey(CsrfToken token, Model model) {
+        model.addAttribute("csrfToken", token.getToken());
+        return "add-passkey";
     }
 }
