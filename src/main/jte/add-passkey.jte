@@ -111,14 +111,16 @@
             const res = await fetch("/webauthn/register/options", {
                 method: "POST",
                 headers: {
+                    "Content-Type": "application/json",
                     "X-CSRF-TOKEN": csrf
-                }
+                },
+                body: JSON.stringify({})
             });
             if (!res.ok) throw new Error("Could not get registration options");
 
             const options = await res.json();
             options.challenge = base64urlToBuffer(options.challenge);
-            options.userEntity.id = base64urlToBuffer(options.userEntity.id);
+            options.user.id = base64urlToBuffer(options.user.id);
             if (options.excludeCredentials) {
                 for (let cred of options.excludeCredentials) {
                     cred.id = base64urlToBuffer(cred.id);
@@ -148,6 +150,13 @@
         }
     };
 
+    function bytesToBase64Url(bytes) {
+        const binary = new Uint8Array(bytes);
+        let str = "";
+        for (let i = 0; i < binary.length; i++) str += String.fromCharCode(binary[i]);
+        return btoa(str).replaceAll("+", "-").replaceAll("/", "_").replace(/=+$/, "");
+    }
+
     function base64urlToBuffer(base64url) {
         const base64 = base64url.replace(/-/g, "+").replace(/_/g, "/").padEnd(base64url.length + (4 - base64url.length % 4) % 4, "=");
         const binary = atob(base64);
@@ -156,27 +165,21 @@
         return bytes.buffer;
     }
 
-    function bufferToBase64url(buffer) {
-        const bytes = new Uint8Array(buffer);
-        let str = "";
-        for (let i = 0; i < bytes.length; i++) str += String.fromCharCode(bytes[i]);
-        return btoa(str).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
-    }
-
     function toRegistrationJSON(cred, label) {
         return {
             publicKey: {
                 label: label,
                 credential: {
                     id: cred.id,
-                    rawId: bufferToBase64url(cred.rawId),
+                    rawId: bytesToBase64Url(cred.rawId),
                     type: cred.type,
                     response: {
-                        attestationObject: bufferToBase64url(cred.response.attestationObject),
-                        clientDataJSON: bufferToBase64url(cred.response.clientDataJSON),
+                        attestationObject: bytesToBase64Url(cred.response.attestationObject),
+                        clientDataJSON: bytesToBase64Url(cred.response.clientDataJSON),
                         transports: cred.response.getTransports ? cred.response.getTransports() : []
                     },
-                    clientExtensionResults: cred.getClientExtensionResults?.() ?? {}
+                    clientExtensionResults: cred.getClientExtensionResults?.() ?? {},
+                    authenticatorAttachment: cred.authenticatorAttachment
                 }
             }
         };

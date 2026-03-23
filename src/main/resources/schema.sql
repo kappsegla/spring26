@@ -1,26 +1,28 @@
 CREATE TABLE IF NOT EXISTS user_entities
 (
-    id           VARCHAR(255) PRIMARY KEY,
-    name         VARCHAR(255) NOT NULL UNIQUE,
-    display_name VARCHAR(255)
+    id           varchar(1000) not null,
+    name         varchar(100)  not null,
+    display_name varchar(200),
+    primary key (id)
 );
 
 CREATE TABLE IF NOT EXISTS user_credentials
 (
-    credential_id              VARCHAR(255) PRIMARY KEY,
-    user_entity_user_id        VARCHAR(255) NOT NULL,
-    public_key BYTEA NOT NULL,
-    signature_count            BIGINT       NOT NULL,
-    uv_initialized             BOOLEAN      NOT NULL,
-    backup_eligible            BOOLEAN      NOT NULL,
-    authenticator_transports   VARCHAR(255),
-    public_key_credential_type VARCHAR(255),
-    backup_state               BOOLEAN      NOT NULL,
-    attestation_object BYTEA,
-    attestation_client_data_json BYTEA,
-    created                    TIMESTAMP    NOT NULL,
-    last_used                  TIMESTAMP    NOT NULL,
-    label                      VARCHAR(255)
+    credential_id              varchar(1000) not null,
+    user_entity_user_id        varchar(1000) not null,
+    public_key bytea not null,
+    signature_count            bigint,
+    uv_initialized             boolean,
+    backup_eligible            boolean       not null,
+    authenticator_transports   varchar(1000),
+    public_key_credential_type varchar(100),
+    backup_state               boolean       not null,
+    attestation_object bytea,
+    attestation_client_data_json bytea,
+    created                    timestamp,
+    last_used                  timestamp,
+    label                      varchar(1000) not null,
+    primary key (credential_id)
 );
 
 CREATE TABLE IF NOT EXISTS device_link_token
