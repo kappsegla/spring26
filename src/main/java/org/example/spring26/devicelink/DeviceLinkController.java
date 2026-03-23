@@ -1,11 +1,15 @@
 package org.example.spring26.devicelink;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +25,8 @@ import java.util.UUID;
 public class DeviceLinkController {
 
     private final DeviceLinkTokenRepository repo;
+
+    private final SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
 
     public DeviceLinkController(DeviceLinkTokenRepository repo) {
         this.repo = repo;
@@ -47,7 +53,7 @@ public class DeviceLinkController {
     }
 
     @GetMapping("/device-link")
-    public void linkDevice(@RequestParam String token, HttpServletResponse response) throws IOException {
+    public void linkDevice(@RequestParam String token, HttpServletRequest request, HttpServletResponse response) throws IOException {
         DeviceLinkToken t = repo.findById(token)
                 .filter(x -> !x.isUsed())
                 .filter(x -> x.getExpiresAt().isAfter(Instant.now()))
@@ -63,7 +69,11 @@ public class DeviceLinkController {
                         List.of(new SimpleGrantedAuthority("ROLE_TEMP"))
                 );
 
-        SecurityContextHolder.getContext().setAuthentication(auth);
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(auth);
+        SecurityContextHolder.setContext(context);
+
+        securityContextRepository.saveContext(context, request, response);
 
         response.sendRedirect("/add-passkey");
     }
