@@ -3,6 +3,8 @@ package org.example.spring26.webauthn;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -40,7 +42,11 @@ public class SignupController {
 
     @PostMapping("/signup")
     @ResponseBody
-    public void signup(@RequestBody SignupRequest req, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<String> signup(@RequestBody SignupRequest req, HttpServletRequest request, HttpServletResponse response) {
+        if (users.findByUsername(req.username) != null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already taken");
+        }
+
         byte[] idBytes = new byte[32];
         random.nextBytes(idBytes);
 
@@ -63,6 +69,8 @@ public class SignupController {
         // Spara i sessionen via SecurityContextRepository
         SecurityContextRepository repo = new HttpSessionSecurityContextRepository();
         repo.saveContext(context, request, response);
+
+        return ResponseEntity.ok().build();
     }
 
     public static class SignupRequest {

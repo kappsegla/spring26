@@ -157,7 +157,8 @@
             document.getElementById("step-1").classList.add("hidden");
             document.getElementById("step-2").classList.remove("hidden");
         } else {
-            alert("Could not create account. Username might be taken.");
+            const errorMsg = await res.text();
+            alert(errorMsg || "Could not create account. Username might be taken.");
         }
     };
 
