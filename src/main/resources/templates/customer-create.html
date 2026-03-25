@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Skapa kund</title>
+</head>
+<body>
+<h1>Skapa kund</h1>
+
+<form th:action="@{/customers}" method="post">
+    <label>Namn:
+        <input type="text" name="name"/>
+    </label>
+    <button type="submit">Spara</button>
+</form>
+
+<a href="/customers">Tillbaka</a>
+</body>
+</html>

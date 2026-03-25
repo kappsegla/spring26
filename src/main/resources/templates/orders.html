@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Ordrar</title>
+</head>
+<body>
+<h1>Ordrar</h1>
+
+<h2>Skapa order</h2>
+<form th:action="@{/orders}" method="post">
+    <label>Kund:
+        <select name="customerId">
+            <option th:each="customer : ${customers}"
+                    th:value="${customer.id}"
+                    th:text="${customer.name}">
+            </option>
+        </select>
+    </label>
+    <button type="submit">Skapa</button>
+</form>
+
+<h2>Befintliga ordrar</h2>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Kund ID</th>
+        <th>Status</th>
+        <th>Detaljer</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="order : ${orders}">
+        <td th:text="${order.id}"></td>
+        <td th:text="${order.customerId}"></td>
+        <td th:text="${order.status}"></td>
+        <td>
+            <a th:href="@{'/orders/' + ${order.id}}">Visa</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<a href="/customers">Visa kunder</a>
+</body>
+</html>

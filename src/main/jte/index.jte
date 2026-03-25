@@ -43,15 +43,13 @@
 @if(isAuthenticated)
     <p>Welcome, ${displayName}!</p>
     <div class="nav">
-        <a href="/profile" class="button">My Profile</a>
-        <a href="/files" class="button">File Manager</a>
         <form action="/logout" method="post" style="display:inline;">
             <input type="hidden" name="_csrf" value="${csrfToken}">
             <button type="submit" class="button">Logout</button>
         </form>
     </div>
 @else
-    <p>Welcome to S3 demonstration.</p>
+    <p>Welcome!</p>
     <div class="nav">
         <a href="/login" class="button">Login</a>
         <a href="/signup" class="button">Sign Up</a>
