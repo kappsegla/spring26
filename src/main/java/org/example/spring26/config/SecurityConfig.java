@@ -8,8 +8,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
+
+import java.util.Collections;
+import java.util.Map;
 
 
 @Configuration
@@ -22,7 +27,7 @@ public class SecurityConfig {
         return http
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo
-                                .oidcUserService(this.oidcUserService())
+                                .oidcUserService(this.oidcUserServiceLight())
                         )
                 )
                 .authorizeHttpRequests(auth -> auth
@@ -38,9 +43,15 @@ public class SecurityConfig {
     private OAuth2UserService<OidcUserRequest, OidcUser> oidcUserService() {
         OidcUserService delegate = new OidcUserService();
 
-        return (userRequest) -> {
+        return userRequest -> {
             // 1. Låt Spring hämta ID Token + UserInfo
             OidcUser oidcUser = delegate.loadUser(userRequest);
+
+            // This is JUST the "Direct" info from the JWT
+            Map<String, Object> idTokenClaims = oidcUser.getIdToken().getClaims();
+
+            // This is the "Merged" info (ID Token + Extra Call)
+            Map<String, Object> allAttributes = oidcUser.getAttributes();
 
             // 2. Extrahera claims
             String email = oidcUser.getEmail();
@@ -54,6 +65,19 @@ public class SecurityConfig {
 
             // 4. Returnera användaren vidare till Spring Security
             return oidcUser;
+        };
+    }
+
+    //Alternative implementation that doesn't load extra profile info
+    public OAuth2UserService<OidcUserRequest, OidcUser> oidcUserServiceLight() {
+        return userRequest -> {
+            // We DO NOT call delegate.loadUser(userRequest) here.
+            // Instead, we just grab the ID Token already in the request.
+            OidcIdToken idToken = userRequest.getIdToken();
+
+            // We wrap it in a DefaultOidcUser.
+            // This contains only what was "pushed" during login (email, sub, etc.)
+            return new DefaultOidcUser(Collections.emptyList(), idToken);
         };
     }
 
