@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
@@ -12,6 +13,7 @@ import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
 import java.util.Collections;
 import java.util.Map;
@@ -22,18 +24,34 @@ public class SecurityConfig {
 
     private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
 
+    /*
+    On the server side, the goal is to make your API "SPA-aware." By default, Spring Security assumes every request
+    comes from a browser address bar, so it tries to be helpful by sending a 302 Redirect to the login page.
+
+    For a JavaScript fetch call, a redirect to a 3rd-party OAuth provider (Google) causes a CORS error.
+    Instead, we want the server to send a 401 Unauthorized status code for anything under /api/**.
+    */
+
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo
-                                .oidcUserService(this.oidcUserServiceLight())
+                                .oidcUserService(this.oidcUserService())
                         )
                 )
                 .authorizeHttpRequests(auth -> auth
-                        // Public endpoints
-                        .requestMatchers("/login", "/error").permitAll()
+                        .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated()
+                )
+                .exceptionHandling(exceptions -> exceptions
+                        // 1. Handle "Not Logged In" (401 for APIs, Redirect for Others)
+                        .defaultAuthenticationEntryPointFor(
+                                new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),
+                                // This is the most modern/standard way to target a path pattern
+                                request -> request.getServletPath().startsWith("/api/")
+                        )
                 )
                 .logout(logout -> logout.logoutSuccessUrl("/").permitAll())
                 .build();

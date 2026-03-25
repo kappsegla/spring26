@@ -6,7 +6,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Spring Boot Passkey Demo</title>
+    <title>Spring Boot Demo</title>
     <style>
         body {
             font-family: system-ui, sans-serif;
@@ -38,20 +38,20 @@
     </style>
 </head>
 <body>
-<h1>Spring Boot Passkey Demo</h1>
+<h1>Spring Boot Demo</h1>
 
 @if(isAuthenticated)
     <p>Welcome, ${displayName}!</p>
     <div class="nav">
         <a href="/profile" class="button">My Profile</a>
-        <a href="/add-passkey" class="button">Add Passkey</a>
+        <a href="/files" class="button">File Manager</a>
         <form action="/logout" method="post" style="display:inline;">
             <input type="hidden" name="_csrf" value="${csrfToken}">
             <button type="submit" class="button">Logout</button>
         </form>
     </div>
 @else
-    <p>Welcome to the WebAuthn / Passkey demonstration.</p>
+    <p>Welcome to S3 demonstration.</p>
     <div class="nav">
         <a href="/login" class="button">Login</a>
         <a href="/signup" class="button">Sign Up</a>
