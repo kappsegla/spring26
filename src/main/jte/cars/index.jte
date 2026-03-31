@@ -1,9 +1,7 @@
 @import org.example.spring26.model.Car
-@import java.util.List
 @import jakarta.servlet.http.HttpServletRequest
 @import org.springframework.security.web.csrf.CsrfToken
 
-@param List<Car> cars
 @param HttpServletRequest request
 @param CsrfToken _csrf
 
@@ -17,9 +15,28 @@
 
     <title>Car Fleet Management</title>
 
-    <link rel="stylesheet" href="./oat.min.css">
-    <script src="./oat.min.js" defer></script>
+    <link rel="stylesheet" href="/oat.min.css">
+    <script src="/oat.min.js" defer></script>
     <script src="/htmx.min.js"></script>
+    <style>
+        .htmx-swapping {
+            opacity: 0;
+            transition: opacity 1s ease-out;
+        }
+
+        .htmx-indicator {
+            display: none;
+        }
+
+        .htmx-request .htmx-indicator {
+            display: inline;
+        }
+
+        .htmx-request.oat-btn {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+    </style>
 
     <script>
         document.addEventListener('htmx:configRequest', (event) => {
@@ -44,16 +61,15 @@
             <!-- Form -->
             <form
                     hx-post="/cars"
-                    hx-target="#car-list"
-                    hx-swap="beforeend"
-                    hx-on::after-request="this.reset()"
+                    hx-swap="none"
+                    hx-on="htmx:afterRequest: if (event.detail.successful) this.reset()"
                     class="oat-grid oat-grid-cols-4 oat-gap-3"
             >
                 <input type="text" name="make" class="oat-input" placeholder="Make" required>
                 <input type="text" name="model" class="oat-input" placeholder="Model" required>
                 <input type="number" name="year" class="oat-input" placeholder="Year" required>
 
-                <button type="submit" class="oat-btn oat-btn-success oat-w-full">
+                <button type="submit" class="oat-btn oat-btn-success oat-w-full" hx-disabled-elt="this">
                     Add Car
                 </button>
             </form>
@@ -70,9 +86,12 @@
                 </thead>
                 <tbody id="car-list"
                        hx-get="/cars/list"
-                       hx-trigger="load"
-                       hx-target="#car-list"
-                       hx-swap="innerHTML">
+                       hx-trigger="load, carAdded from:body, carDeleted from:body">
+                <tr>
+                    <td colspan="4" class="oat-text-center oat-p-4">
+                        <div class="oat-text-muted">Loading fleet...</div>
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>

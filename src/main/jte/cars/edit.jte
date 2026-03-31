@@ -29,14 +29,16 @@
                 hx-put="/cars/${car.getId()}"
                 hx-include="closest tr"
                 hx-target="#car-row-${car.getId()}"
-                hx-swap="outerHTML">
+                hx-swap="outerHTML"
+                hx-disabled-elt="this">
             Save
         </button>
 
         <button class="oat-btn oat-btn-s oat-btn-secondary"
                 hx-get="/cars/${car.getId()}"
                 hx-target="#car-row-${car.getId()}"
-                hx-swap="outerHTML">
+                hx-swap="outerHTML"
+                hx-disabled-elt="this">
             Cancel
         </button>
     </td>

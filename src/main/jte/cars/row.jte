@@ -11,15 +11,16 @@
         <button class="oat-btn oat-btn-s oat-btn-primary"
                 hx-get="/cars/${car.getId()}/edit"
                 hx-target="#car-row-${car.getId()}"
-                hx-swap="outerHTML">
+                hx-swap="outerHTML"
+                hx-disabled-elt="this">
             Edit
         </button>
 
         <button class="oat-btn oat-btn-s oat-btn-danger"
                 hx-delete="/cars/${car.getId()}"
-                hx-target="#car-list"
-                hx-swap="innerHTML"
-                hx-confirm="Are you sure?">
+                hx-swap="none"
+                hx-confirm="Are you sure?"
+                hx-disabled-elt="this">
             Remove
         </button>
     </td>
