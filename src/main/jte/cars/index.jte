@@ -1,19 +1,19 @@
 @import org.example.spring26.model.Car
 @import java.util.List
 @import jakarta.servlet.http.HttpServletRequest
+@import org.springframework.security.web.csrf.CsrfToken
 
 @param List<Car> cars
 @param HttpServletRequest request
+@param CsrfToken _csrf
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="_csrf"
-          content="${org.springframework.security.web.csrf.CsrfToken.class.cast(request.getAttribute(org.springframework.security.web.csrf.CsrfToken.class.getName())).getToken()}"/>
-    <meta name="_csrf_header"
-          content="${org.springframework.security.web.csrf.CsrfToken.class.cast(request.getAttribute(org.springframework.security.web.csrf.CsrfToken.class.getName())).getHeaderName()}"/>
+    <meta name="_csrf" content="${_csrf.getToken()}">
+    <meta name="_csrf_header" content="${_csrf.getHeaderName()}">
 
     <title>Car Fleet Management</title>
 

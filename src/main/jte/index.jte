@@ -45,6 +45,7 @@
     <div class="nav">
         <a href="/profile" class="button">My Profile</a>
         <a href="/files" class="button">File Manager</a>
+        <a href="/cars" class="button">Htmx example with Cars</a>
         <form action="/logout" method="post" style="display:inline;">
             <input type="hidden" name="_csrf" value="${csrfToken}">
             <button type="submit" class="button">Logout</button>

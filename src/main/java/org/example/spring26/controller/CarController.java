@@ -2,6 +2,7 @@ package org.example.spring26.controller;
 
 import org.example.spring26.model.Car;
 import org.example.spring26.repository.CarRepository;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,8 @@ public class CarController {
     public String index(Model model, jakarta.servlet.http.HttpServletRequest request) {
         model.addAttribute("cars", carRepository.findAll());
         model.addAttribute("request", request);
+        CsrfToken token = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
+        model.addAttribute("_csrf", token);
         return "cars/index";
     }
 
@@ -34,7 +37,7 @@ public class CarController {
     public String deleteCar(@PathVariable Long id, Model model) {
         carRepository.deleteById(id);
         model.addAttribute("cars", carRepository.findAll());
-        return "cars/list"; // return fragmentet
+        return "cars/list";
     }
 
     @GetMapping("/{id}/edit")
