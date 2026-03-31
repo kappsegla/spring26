@@ -73,20 +73,29 @@
                     Add Car
                 </button>
             </form>
+            <!-- Loading indicator (visas vid varje htmx-request) -->
+            <div id="car-list-loading" class="htmx-indicator oat-text-muted oat-p-2">
+                Loading fleet...
+            </div>
 
-            <!-- Table -->
-            <table class="oat-table oat-table-hover">
+            <table class="oat-table">
                 <thead>
-                <tr class="oat-bg-3">
-                    <th>Make</th>
-                    <th>Model</th>
-                    <th>Year</th>
-                    <th>Actions</th>
+                <tr>
+                    <th>Reg nr</th>
+                    <th>Modell</th>
+                    <th>År</th>
+                    <th></th>
                 </tr>
                 </thead>
+
                 <tbody id="car-list"
                        hx-get="/cars/list"
-                       hx-trigger="load, carAdded from:body, carDeleted from:body">
+                       hx-trigger="load, carAdded from:body, carDeleted from:body"
+                       hx-target="#car-list"
+                       hx-swap="innerHTML"
+                       hx-indicator="#car-list-loading">
+
+                <!-- Initial placeholder (visas bara innan första load) -->
                 <tr>
                     <td colspan="4" class="oat-text-center oat-p-4">
                         <div class="oat-text-muted">Loading fleet...</div>
