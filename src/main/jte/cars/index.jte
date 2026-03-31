@@ -74,13 +74,9 @@
                        hx-target="#car-list"
                        hx-swap="innerHTML">
                 </tbody>
-                <!-- @template.cars.list(cars = cars)-->
             </table>
-
         </div>
     </div>
-
 </div>
-
 </body>
 </html>
