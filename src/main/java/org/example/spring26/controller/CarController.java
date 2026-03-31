@@ -31,10 +31,10 @@ public class CarController {
     }
 
     @DeleteMapping("/{id}")
-    @ResponseBody
-    public String deleteCar(@PathVariable Long id) {
+    public String deleteCar(@PathVariable Long id, Model model) {
         carRepository.deleteById(id);
-        return ""; // HTMX will remove the target element because we return empty response and swap is outerHTML
+        model.addAttribute("cars", carRepository.findAll());
+        return "cars/list"; // return fragmentet
     }
 
     @GetMapping("/{id}/edit")
