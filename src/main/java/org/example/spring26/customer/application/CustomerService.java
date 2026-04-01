@@ -8,7 +8,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CustomerService implements CustomerLookup {
@@ -34,9 +33,10 @@ public class CustomerService implements CustomerLookup {
     }
 
     @Override
-    public Optional<CustomerLookup.CustomerDto> findById(Long id) {
+    public CustomerDto findById(Long id) {
         return repository.findById(id)
-                .map(c -> new CustomerLookup.CustomerDto(c.getId(), c.getName()));
+                .map(c -> new CustomerLookup.CustomerDto(c.getId(), c.getName()))
+                .orElseThrow(CustomerNotFoundException::new);
     }
 
     @Override

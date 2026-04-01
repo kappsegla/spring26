@@ -5,7 +5,6 @@ import org.example.spring26.order.application.ports.out.CustomerPort;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class CustomerAdapter implements CustomerPort {
@@ -17,13 +16,15 @@ public class CustomerAdapter implements CustomerPort {
     }
 
     @Override
-    public Optional<CustomerInfo> findById(Long id) {
-        return customerLookup.findById(id)
-                .map(customer -> new CustomerInfo(customer.id(), customer.name()));
+    public CustomerInfo findById(Long id) {
+        var customer = customerLookup.findById(id);
+        return new CustomerInfo(customer.id(), customer.name());
     }
 
     @Override
-    public List<CustomerLookup.CustomerDto> findAll() {
-        return customerLookup.listAllCustomers();
+    public List<CustomerInfo> findAll() {
+        return customerLookup.listAllCustomers().stream()
+                .map(customer -> new CustomerInfo(customer.id(), customer.name()))
+                .toList();
     }
 }

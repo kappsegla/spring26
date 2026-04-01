@@ -34,8 +34,7 @@ public class OrderService implements OrderUseCase {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow();
 
-        var customer = customerPort.findById(order.getCustomerId())
-                .orElseThrow();
+        var customer = customerPort.findById(order.getCustomerId());
 
         return new OrderDetails(
                 order.getId(),
