@@ -1,6 +1,5 @@
 package org.example.spring26.order.infrastructure.adapters.in.web;
 
-import org.example.spring26.customer.CustomerLookup;
 import org.example.spring26.order.application.ports.in.OrderUseCase;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,17 +10,15 @@ import org.springframework.web.bind.annotation.*;
 public class OrderController {
 
     private final OrderUseCase orderUseCase;
-    private final CustomerLookup customerLookup;
 
-    public OrderController(OrderUseCase orderUseCase, CustomerLookup customerLookup) {
+    public OrderController(OrderUseCase orderUseCase) {
         this.orderUseCase = orderUseCase;
-        this.customerLookup = customerLookup;
     }
 
     @GetMapping
     public String listOrders(Model model) {
         model.addAttribute("orders", orderUseCase.findAll());
-        model.addAttribute("customers", customerLookup.listAllCustomers());
+        model.addAttribute("customers", orderUseCase.getAvailableCustomers());
         return "orders";
     }
 

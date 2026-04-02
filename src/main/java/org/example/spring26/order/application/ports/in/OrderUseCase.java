@@ -11,6 +11,11 @@ public interface OrderUseCase {
 
     OrderDetails getOrderDetails(Long orderId);
 
+    List<CustomerInfo> getAvailableCustomers();
+
     record OrderDetails(Long orderId, String customerName, String status) {
+    }
+
+    record CustomerInfo(Long id, String name) {
     }
 }

@@ -13,7 +13,8 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 //Run integration tests for individual application modules.
@@ -36,7 +37,7 @@ class CustomerModuleIntegrationTest {
     @Test
     void testFindAll() {
         // Arrange
-        repository.save(new Customer(null, "John Doe"));
+        repository.save(new Customer("John Doe"));
 
         // Act
         var result = service.findAll();
@@ -65,14 +66,14 @@ class CustomerModuleIntegrationTest {
     @Test
     void testFindById() {
         // Arrange
-        Customer savedCustomer = repository.save(new Customer(null, "Alice"));
+        Customer savedCustomer = repository.save(new Customer("Alice"));
         Long id = savedCustomer.getId();
 
         // Act - Hämta via servicen
         var result = service.findById(id);
 
         // Assert
-        assertTrue(result.isPresent());
-        assertEquals("Alice", result.get().name());
+        assertNotNull(result);
+        assertEquals("Alice", result.name());
     }
 }
