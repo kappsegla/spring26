@@ -1,4 +1,4 @@
-package org.example.spring26.shared.api;
+package org.example.spring26.customer;
 
 public record CustomerCreatedEvent(Long customerId, String name) {
 }

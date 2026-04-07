@@ -1,11 +1,12 @@
 package org.example.spring26.customer.application;
 
+import org.example.spring26.customer.CustomerCreatedEvent;
 import org.example.spring26.customer.CustomerLookup;
 import org.example.spring26.customer.domain.Customer;
 import org.example.spring26.customer.domain.CustomerRepository;
-import org.example.spring26.shared.api.CustomerCreatedEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class CustomerService implements CustomerLookup {
         return repository.findAll();
     }
 
+    @Transactional
     public Customer createCustomer(String name) {
         Customer customer = new Customer(name);
         Customer saved = repository.save(customer);

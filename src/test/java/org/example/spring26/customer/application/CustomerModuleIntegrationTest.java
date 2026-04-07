@@ -1,8 +1,8 @@
 package org.example.spring26.customer.application;
 
+import org.example.spring26.customer.CustomerCreatedEvent;
 import org.example.spring26.customer.domain.Customer;
 import org.example.spring26.customer.domain.CustomerRepository;
-import org.example.spring26.shared.api.CustomerCreatedEvent;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
