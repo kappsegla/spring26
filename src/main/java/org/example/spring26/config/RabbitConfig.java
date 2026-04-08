@@ -9,17 +9,16 @@ public class RabbitConfig {
 
 //    @Bean
 //    public DirectExchange directExchange() {
-//        // The name must match exactly: 'customer.CustomerCreatedEvent'
-//        return new DirectExchange("customer.CustomerCreatedEvent");
+//        return new DirectExchange("customer.events");
 //    }
 
     @Bean
     public TopicExchange topicEventsExchange() {
-        return new TopicExchange("customer.CustomerCreatedEvent");
+        return new TopicExchange("customer.events");
     }
 
 //    @Bean
 //    FanoutExchange fanoutExchange() {
-//        return new FanoutExchange("customer.CustomerCreatedEvent");
+//        return new FanoutExchange("customer.events");
 //    }
 }
