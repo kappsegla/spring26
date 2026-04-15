@@ -36,6 +36,18 @@ public class FileController {
         return "files";
     }
 
+    @GetMapping("/fileinfo")
+    public String fileInfo(Model model, @AuthenticationPrincipal OAuth2User user, CsrfToken csrfToken) {
+        if (user == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("displayName", user.getAttribute("name"));
+        model.addAttribute("isAuthenticated", true);
+        model.addAttribute("csrfToken", csrfToken.getToken());
+        model.addAttribute("fileInfo", s3Service.fileInfo());
+        return "fileinfo";
+    }
+
     @GetMapping("/api/files")
     @ResponseBody
     public List<String> listFiles() {

@@ -14,6 +14,7 @@ import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequ
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -52,8 +53,22 @@ public class S3Service {
                 .build();
         ListObjectsV2Response listObjectsV2Response = s3Client.listObjectsV2(listObjectsV2Request);
         return listObjectsV2Response.contents().stream()
+                .peek(obj -> System.out.println(obj.lastModified()))
                 .map(S3Object::key)
                 .toList();
+    }
+
+    public List<FileInfo> fileInfo() {
+        ListObjectsV2Request listObjectsV2Request = ListObjectsV2Request.builder()
+                .bucket(BUCKET_NAME)
+                .build();
+        ListObjectsV2Response listObjectsV2Response = s3Client.listObjectsV2(listObjectsV2Request);
+        return listObjectsV2Response.contents().stream()
+                .map(obj -> new FileInfo(obj.key(), obj.lastModified()))
+                .toList();
+    }
+
+    public record FileInfo(String key, Instant lastModified) {
     }
 
     public String generatePresignedUploadUrl(String fileName, String contentType) {

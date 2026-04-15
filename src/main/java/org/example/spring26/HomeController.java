@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestClient;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Map;
 
 @Controller
@@ -61,5 +63,9 @@ public class HomeController {
                 .body(Map.class); // No need for .block() like WebClient!
     }
 
-
+    @GetMapping("/dateandtime")
+    @ResponseBody
+    public ZonedDateTime getDateAndTime() {
+        return ZonedDateTime.now(ZoneId.of("Europe/Stockholm"));
+    }
 }
