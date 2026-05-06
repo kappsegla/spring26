@@ -30,7 +30,7 @@ public class ExternalService {
 
     @CircuitBreaker(name = "externalService", fallbackMethod = "fallback")
     @Retry(name = "externalService")
-    //@Retryable(includes = RetryableHttpException.class, maxRetries = 2)
+    //@Retryable(includes = RetryableHttpException.class, maxRetries = 2)  // Use only on its own, spring framework retry
     public String fetchData() {
         return restClient.get()
                 .uri("/api/data")

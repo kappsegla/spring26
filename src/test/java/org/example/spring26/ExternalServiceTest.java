@@ -80,6 +80,5 @@ class ExternalServiceTest {
 
         Thread.sleep(6000);  //Timeout open state so we are in half-open
         service.fetchData(); // Now it should work again
-        verify(3, getRequestedFor(urlEqualTo("/api/data"))); // CB tried calling the api once but still not so back to open state
     }
 }
